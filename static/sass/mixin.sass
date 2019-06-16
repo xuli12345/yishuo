@@ -1,0 +1,178 @@
+@import "base"
+@import "css3"
+
+// 背景图片
+@mixin bg-image($url)
+  background-image: url($url + "@2x.png")
+  @media (-webkit-min-device-pixel-ratio: 3),(min-device-pixel-ratio: 3)
+    background-image: url($url + "@3x.png")
+
+//1px边框线
+@mixin border-1px($color)
+  position: relative
+  &:after
+    display: block
+    width: 100%
+    position: absolute
+    left: 0
+    bottom: 0
+    border-top: 1px solid $color
+    content: ''
+
+//无1px边框线
+@mixin border-none()
+  &:after
+    display: none
+
+// 扩展点击区域
+@mixin extend-click()
+  position: relative
+  &:before
+    content: ''
+    position: absolute
+    top: -10px
+    left: -10px
+    right: -10px
+    bottom: -10px
+
+
+// 不换行
+@mixin no-wrap()
+  text-overflow: ellipsis
+  overflow: hidden
+  white-space: nowrap
+
+// size 宽、高
+//    $width：   宽度
+//    $height：  高度（如果不传值，默认为宽度值）
+//  例：@include size(20px) / @include size(20px, 30px)
+@mixin size($width, $height: $width)
+  width: $width
+  height: $height
+
+// line-height 行高
+//    $height：  高度
+//  例：@include line-height(20px)
+@mixin line-height($height)
+  height: $height
+  line-height: $height
+
+// size-height 宽、高、行高
+//    $width：   宽度
+//    $height：  高度
+//  例：@include size-height(20px, 30px)
+@mixin size-height($width, $height)
+  @include line-height($height)
+  width: $width
+
+
+// position 定位
+//    $position：  定位
+//    $args：      值（默认方向为上右下左，可自定义传入单个或多个）
+//  例：@include position(absolute, (top 0 right 0 bottom 0 left 0))
+@mixin position($position, $args)
+  $offsets: top right bottom left
+
+  position: $position
+  @each $o in $offsets
+    $i: index($args, $o)
+    @if $i and $i + 1 <= length($args) and type-of(nth($args, $i + 1)) == number
+      #{$o}: nth($args, $i + 1)
+
+
+// center 定位居中
+//    $width：   宽度（可选）
+//    $height：  高度（可选）
+//  例：@include center(20px, 30px)，有宽高
+//      @include center(null, 30px)，只有高
+//      @include center(20px)，只有宽
+//      @include center，无宽高
+@mixin center($width: null, $height: null)
+  @include position(absolute, (top 50% left 50%))
+  @if not $width and not $height
+    @include css3(transform, translate(-50%, -50%))
+  @else if $width and $height
+    @include size($width, $height)
+    margin-top: -($height / 2)
+    margin-left: -($width / 2)
+  @else if not $height
+    @include css3(transform, translateY(-50%))
+    width: $width
+    margin-left: -($width / 2)
+  @else
+    @include css3(transform, translateX(-50%))
+    height: $height
+    margin-top: -($height / 2)
+
+
+// opacity 透明度
+//    $opacity： 透明度
+//  例：@include opacity(0.5)
+
+@mixin opacity($opacity)
+  $opacity-ie: $opacity * 100
+
+  opacity: $opacity
+  _filter: alpha(opacity=$opacity-ie)
+
+
+// black/white 黑白透明度
+//    $opacity： 透明度
+//  例：background-color: black(0.5)
+//      color: white(0.3)
+@function black($opacity)
+  @return rgba(0, 0, 0, $opacity)
+@function white($opacity)
+  @return rgba(255, 255, 255, $opacity)
+
+
+// b-solid 实线边框
+//    $width：     边线宽度
+//    $color：     颜色
+//    $direction： 方向（如果不传值，默认为所有边线）
+//  例：@include b-solid(1px, #f00)
+//      @include b-solid(1px, #f00, top)
+@mixin b-solid($width, $color, $direction: null)
+  @if not $direction
+    border: $width solid $color
+  @else
+    border-#{$direction}: $width solid $color
+
+
+// b-dashed 虚线边框
+//    $width：     边线宽度
+//    $color：     颜色
+//    $direction： 方向（如果不传值，默认为所有边线）
+//  例：@include b-dashed(1px, #f00)
+//      @include b-dashed(1px, #f00, top)
+@mixin b-dashed($width, $color, $direction: null)
+  @if not $direction
+    border: $width dashed $color
+  @else
+    border-#{$direction}: $width dashed $color
+
+
+// elimit 限制字符
+//    $width： 宽度
+//    $units： 单位（如果不传值，默认为 px）
+//  例：@include elimit(40)，页面直接引用 class="elimit40"
+//      @include elimit(2, rem)，页面直接引用 class="elimit-2rem"
+@mixin elimit($width, $units: null)
+  @if not $units
+    .elimit#{$width}
+      @extend %ellipsis
+      max-width: #{$width}px
+      display: inline-block
+  @else
+    .elimit-#{$width}#{$units}
+      @extend %ellipsis
+      max-width: #{$width}#{$units}
+      display: inline-block
+
+
+@mixin bg-image($url)
+  background-image: url($url+"@2x.png")
+  @media (-webkit-min-device-pixel-ratio: 3),(min-device-pixel-ratio: 3)
+    background-image: url($url+"@3x.png")
+
+

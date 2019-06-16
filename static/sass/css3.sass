@@ -1,0 +1,165 @@
+//
+// == css3
+// --------------------------------------------------
+
+
+// css3 浏览器前缀
+//
+//    $property：  属性
+//    $value：     值
+//
+//  例：@include css3(box-sizing, border-box)
+@mixin css3($property, $value)
+  @each $prefix in -webkit-, -moz-, -ms-, -o-, ''
+    #{$prefix}#{$property}: $value
+
+
+// radius 圆角
+//
+//    $radius：    圆角值
+//    $direction： 方向（如果不传值，默认为全部）
+//
+//  例：@include radius(20px)
+//      @include radius(20px, top)
+@mixin radius($radius, $direction: null)
+  @if not $direction
+    @include css3(border-radius, $radius)
+  @else if $direction == top // 左上、右上
+    @include css3(border-top-right-radius, $radius)
+    @include css3(border-top-left-radius, $radius)
+  @else if $direction == right // 右上、右下
+    @include css3(border-bottom-right-radius, $radius)
+    @include css3(border-top-right-radius, $radius)
+  @else if $direction == bottom // 左下、右下
+    @include css3(border-bottom-right-radius, $radius)
+    @include css3(border-bottom-left-radius, $radius)
+  @else if $direction == left // 左上、左下
+    @include css3(border-bottom-left-radius, $radius)
+    @include css3(border-top-left-radius, $radius)
+
+
+// shadow 阴影
+//
+//    $x：     水平位移
+//    $y：     垂直位移
+//    $blur：  模糊度
+//    $color： 颜色
+//    $inset： 阴影位置（如果不传值，默认为外阴影）
+//
+//  例：@include shadow(0, 0, 3px, #000)，外阴影
+//      @include shadow(0, 0, 3px, #000, inset)，内阴影
+@mixin shadow($x, $y, $blur, $color, $inset: null)
+  @if not $inset
+    @include css3(box-shadow, $x $y $blur $color)
+  @else
+    @include css3(box-shadow, $inset $x $y $blur $color)
+
+
+// transition 过渡
+//
+//    $property：  元素或动画名称
+//    $time：      时间
+//    $animate：   动画效果
+//
+//  例：@include transition(all, 1s, linear)
+@mixin transition($property, $time, $animate)
+  @include css3(transition, $property $time $animate)
+
+
+// scale 缩放
+//
+//    $scaleX：  水平缩放倍数
+//    $scaleY：  垂直缩放倍数
+//
+//  例：@include scale(2, null)，水平
+//      @include scale(null, 2)，垂直
+//      @include scale(2, 2)
+@mixin scale($scaleX: null, $scaleY: null)
+  @if not $scaleX
+    @include css3(transform, scaleY($scaleY))
+  @else if not $scaleY
+    @include css3(transform, scaleX($scaleX))
+  @else
+    @include css3(transform, scale($scaleX, $scaleY))
+
+
+// translate 位移
+//
+//    $translateX：  水平位移
+//    $translateY：  垂直位移
+//
+//  例：@include translate(20px, null)，水平
+//      @include translate(null, 20px)，垂直
+//      @include translate(20px, 20px)
+@mixin translate($translateX: null, $translateY: null)
+  @if not $translateX
+    @include css3(transform, translateY($translateY))
+  @else if not $translateY
+    @include css3(transform, translateX($translateX))
+  @else
+    @include css3(transform, translate($translateX, $translateY))
+
+
+// skew 翻转
+//
+//    $skewX： 水平翻转角度
+//    $skewY： 垂直翻转角度
+//
+//  例：@include skew(30deg, null)，水平
+//      @include skew(null, 30deg)，垂直
+//      @include skew(30deg, 30deg)
+@mixin skew($skewX: null, $skewY: null)
+  @if not $skewX
+    @include css3(transform, skewY($skewY))
+  @else if not $skewY
+    @include css3(transform, skewX($skewX))
+  @else
+    @include css3(transform, skew($skewX, $skewY))
+
+
+// rotate 旋转
+//
+//    $rotate：  旋转角度
+//
+//  例：@include rotate(30deg)
+@mixin rotate($rotate)
+  @include css3(transform, rotate($rotate))
+
+
+// box-sizing
+//
+//  例：@include box-sizing
+@mixin box-sizing
+  @include css3(box-sizing, border-box)
+
+
+// linear-gradient 线性渐变
+//
+//    $from：  开始颜色
+//    $to：    结束颜色
+//
+//  例：@include linear-gradient(#000, #fff)
+@mixin linear-gradient($from, $to)
+  // Fallback for sad browsers
+  background-color: $to
+  // Mozilla Firefox
+  background-image: -moz-linear-gradient($from, $to)
+  // Opera
+  background-image: -o-linear-gradient($from, $to)
+  // WebKit (Chrome 11+)
+  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, $from), color-stop(1, $to))
+  // WebKit (Safari 5.1+, Chrome 10+)
+  background-image: -webkit-linear-gradient($from, $to)
+  // IE10
+  background-image: -ms-linear-gradient($from, $to)
+  // W3C
+  background-image: linear-gradient($from, $to)
+
+
+// appearance 改变属性外观
+//
+//    $appearance：  属性外观值
+//
+//  例：@include appearance(none)
+@mixin appearance($appearance)
+  @include css3(appearance, $appearance)
